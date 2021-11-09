@@ -7,13 +7,15 @@ const skills = {
 };
 
 const employee = new Schema({
-  firstname: {type:String, required: true},
-  lastname: {type:String, required: true},
-  email: {type:String, required: true},
+  staffnumber: {type:String, required: true, unique: true},
+  firstname: {type:String, required: false},
+  lastname: {type:String, required: false},
+  email: {type:String, required: true, unique: true},
   password: {type:String, required: true},
-  field: {type:String, required: true}, //category
-  department: {type:String, required: true}, 
+  field: {type:String, required: false}, //category
+  department: {type:String, required: false}, 
   supervisor: {type: Boolean, default: false},
+  supervisorNo: {type:String, required: false},
   jobTitle: {type:String, required: true}, 
 
   //Skill categories
