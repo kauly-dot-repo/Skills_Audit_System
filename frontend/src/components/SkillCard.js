@@ -13,6 +13,7 @@ import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 function SkillCard(props) {
 
   const theme = useTheme();
+  const skillObject = props.skill;
 
 
   return (
@@ -45,9 +46,12 @@ function SkillCard(props) {
                 <DeleteOutlinedIcon />
               </IconButton>
             }
-
-            title={props.skill_name}
-            subheader={props.jobTitle}
+            titleTypographyProps={{ variant: 'h6' }}
+            title={skillObject.skill_name}
+            
+            
+            
+          // subheader={props.skill.jobTitle} //skill description
           />
         </Box>
 
@@ -57,10 +61,10 @@ function SkillCard(props) {
           <CardContent sx={{ display: 'flex', flexDirection: 'row' }}>
 
             <Typography variant="subtitle1" color="primary" component="div" sx={{ marginRight: 1 }}>
-              Employee Rating: {props.emp_rating}
+              Employee Rating: {skillObject.emp_rating}
             </Typography>
             <Typography variant="subtitle1" color="primary" component="div" sx={{ marginLeft: 1 }}>
-              Supervisor Rating: {props.sup}
+              Supervisor Rating: {skillObject.sup_rating}
             </Typography>
           </CardContent>
 

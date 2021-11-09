@@ -16,10 +16,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 //   {name: 'Log Out', icon: '' , path:''},
 // ]
 
-const appbarLinks = [
-  { name: 'Edit Profile', path: '/register' },
-  { name: 'Home', path: '/profile' }
-]
+// const appbarLinks = [
+//   { name: 'Edit Profile', path: '/update' }
+// ]
 
 const linkStyle = {
   marginRight: 20,
@@ -31,7 +30,7 @@ const dividerStyle = {
   backgroundColor: 'primary'
 }
 const avatarStyle = {
-  marginRight: 'auto',
+  marginRight: '10px',
   color: 'primary',
   backgroundColor: 'secondary',
 }
@@ -42,11 +41,14 @@ const avatarStyle2 = {
   backgroundColor: 'secondary',
 }
 const spaceStyle = { margin: 'auto' }
+
 const logo = {
   maxWidth: 200,
-  marginRight: 'auto'
+  margin: ' 3px auto 3px 0px'
 }
-const titleStyle = {paddingLeft: 50}
+
+const listStyle = { marginLeft: 'auto' }
+const titleStyle = { paddingLeft: 50, margin: '1px 1px' }
 
 function Header() {
 
@@ -54,27 +56,46 @@ function Header() {
   const [rightOpen, setRightOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
 
+  function endSession() {
+    localStorage.clear();
+  }
+
   return (
     <div>
 
-      <AppBar position='sticky' color='primary' maxWidth=''>
+      <AppBar position='static' color='primary' maxWidth=''>
 
         <Container>
           <Toolbar disableGutters>
 
-            {/* <Avatar style={avatarStyle} onClick={() => setLeftOpen(true)}>K</Avatar> */}
+            
+
             <div style={logo}>
               <img src='https://www.nust.na/sites/default/files/nust_logoANDname-DARKBACKGROUND.png' alt="NUST LOGO" style={logo} />
               <Typography variant='body1' color='white' style={titleStyle}>Skills Audit System</Typography>
             </div>
 
 
-            <Hidden smDown>
-              {appbarLinks.map((item) => (
+            <Hidden smDown style={listStyle}>
+              {/* {appbarLinks.map((item) => (
                 <Link style={linkStyle} color='secondary' variant='button' underline='none' href={item.path}>
                   {item.name}
                 </Link>
-              ))}
+              ))} */}
+              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/profile' onClick={() => setLeftOpen(true)}>
+                EDIT PROFILE
+              </Link>
+              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/profile' onClick={() => setLeftOpen(true)}>
+                OPTIONS
+              </Link>
+              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/' onClick={endSession}>
+                LOG OUT
+              </Link>
+
+
+              <Avatar style={avatarStyle} onClick={() => setLeftOpen(true)}>2</Avatar>
+
+              
             </Hidden>
             <Hidden smUp>
               <IconButton>
@@ -97,13 +118,28 @@ function Header() {
           <Divider />
 
           <List>
-            {appbarLinks.map((item) => (
+            {/* {appbarLinks.map((item) => (
               <ListItem>
                 <Link style={linkStyle} color='primary' variant='button' underline='none' href={item.path}>
                   {item.name}
                 </Link>
               </ListItem>
-            ))}
+            ))} */}
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/update'>
+                EDIT PROFILE
+              </Link>
+            </ListItem>
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/login'>
+                OPTIONS
+              </Link>
+            </ListItem>
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/login'>
+                LOG OUT
+              </Link>
+            </ListItem>
           </List>
 
 
@@ -126,7 +162,7 @@ function Header() {
 
           <Divider />
 
-          <List>
+          {/* <List>
             {appbarLinks.map((item) => (
               <ListItem>
                 <Link style={linkStyle} color='primary' variant='button' underline='none' href={item.path}>
@@ -134,11 +170,18 @@ function Header() {
                 </Link>
               </ListItem>
             ))}
-          </List>
+          </List> */}
 
           <Divider />
 
           <div style={spaceStyle}></div>
+          {/* if they are a supervisor they will get this view */}
+
+
+
+          {/* if not supervisor not */}
+
+
 
           <Divider />
 
@@ -155,6 +198,8 @@ function Header() {
           </Button>
 
           <Divider />
+
+          
         </SwipeableDrawer>
 
       </AppBar>

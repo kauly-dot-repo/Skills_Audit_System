@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import SkillCard from './SkillCard';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
+import axios from 'axios';
 
 
 
@@ -29,23 +31,67 @@ function Skills(props) {
 
   const isSkillEmpty = props;
 
-  // function skillDisplay(isSkillEmpty) {
-  //   if (isSkillEmpty == false) {
-  //     console.log('No skills in ' + props.skillType);
-  //     return null;
+  const [skillname, setSkillName] = useState('');
+  const [skillLevel, setSkillLevel] = useState('');
+  // const [skill, setSkill] = useState('');
+  const skillArray = props.skills;
 
-  //   } else if (isSkillEmpty == false) {
-  //     console.log('No skills in ' + props.skillType)
-  //     return null;
+  console.log('SKILLS ARRAY: ', skillArray);
 
-  //   } else if (isSkillEmpty == false) {
-  //     console.log('No skills in ' + props.skillType)
-  //     return null;
-  //   } else {}
 
-  // switch (isSkillEmpty) {
-  //   case true:
+  function skillSubmitHandler() {
+    console.log(skillname + " " + skillLevel + " " + props.skillType)
 
+    if (props.skillType == "Field Specific") {
+      console.log("I'm in Field Skills!!!")
+      axios.post('http://localhost:8120/new-field-skill', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillname,
+        emp_rating: skillLevel,
+      }).then((response) => {
+        console.log(response);
+        console.log('Skillname ' + skillname + ' Skill Level: ' + skillLevel)
+      })
+    }
+    else if (props.skillType == 'Job Specific') {
+      console.log("I'm in the Job Skills!!!")
+      axios.post('http://localhost:8120/new-job-skill', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillname,
+        emp_rating: skillLevel,
+      }).then((response) => {
+        console.log(response);
+        console.log('Skillname ' + skillname + ' Skill Level: ' + skillLevel)
+      })
+    }
+    else if (props.skillType == 'Soft') {
+      console.log("I'm in Soft Skills")
+      axios.post('http://localhost:8120/new-soft-skill', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillname,
+        emp_rating: skillLevel,
+      }).then((response) => {
+        console.log(response);
+        console.log('Skillname ' + skillname + ' Skill Level: ' + skillLevel)
+      })
+    }
+    else {
+      console.log("I'm in OTHER Skills!!!!")
+      axios.post('http://localhost:8120/new-other-skill', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillname,
+        emp_rating: skillLevel,
+      }).then((response) => {
+        console.log(response);
+        console.log('Skillname ' + skillname + ' Skill Level: ' + skillLevel)
+      })
+    }
+
+    setModalOpen(false)
+    window.location.reload();
+  }
+
+  
   return (
     <Container>
       {/* <Grid container spacing={3}> 
@@ -56,7 +102,7 @@ function Skills(props) {
         border: '1px solid grey', borderRadius: 4,
         '&:hover': {
           border: '1px solid rgb(252, 175, 40)',
-          boxShadow: '1px 1px 18px 1px rgb(252, 175, 40)',
+          // boxShadow: '1px 1px 18px 1px rgb(252, 175, 40)',
         },
       }}>
 
@@ -70,14 +116,18 @@ function Skills(props) {
         <div>
           {/* map of skills */}
 
-          <SkillCard skill_name={props.skill_name} />
-          <SkillCard skill_name={props.skill_name} />
 
-          <Divider />
+          {skillArray.map(skillItem => (
+            <SkillCard   skill={skillItem} />
+          ))}
+
+          {/* <SkillCard  skill_name={'Project Management'} jobTitle={'Lecturer'} /> */}
+
+          {/* <Divider />
 
           <Box style={dividerStyle}></Box>
 
-          <Divider />
+          <Divider /> */}
 
           {/* Add Skill Icon */}
           <Box sx={{ display: 'flex', alignItems: 'self-end', pl: 1, pb: 1, marginTop: '5px', margin: '5px 5px' }}>
@@ -85,11 +135,10 @@ function Skills(props) {
               <AddCircleOutlineOutlinedIcon onClick={() => setModalOpen(true)} />
             </IconButton>
           </Box>
+
         </div>
 
       </Box>
-
-
 
       {/* ADD SKILL MODAL */}
       <Modal
@@ -103,11 +152,18 @@ function Skills(props) {
             <CloseOutlinedIcon onClick={() => setModalOpen(false)} />
           </IconButton>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            Enter {props.skillType} Skills Information
           </Typography>
+
           {/* Add Skill */}
           <form>
-            <TextField fullWidth label='Skill Name' color="secondary" placeholder="e.g., Project Management" required style={textFieldStyle} />
+            <TextField
+              fullWidth label='Skill Name' color="secondary"
+              placeholder="e.g., Project Management"
+              required style={textFieldStyle}
+              onChange={(e) => { setSkillName(e.target.value) }}
+            />
+
             <FormLabel>Rate you Compentncy Below</FormLabel>
             <Slider
               size="small"
@@ -115,12 +171,34 @@ function Skills(props) {
               aria-label="Small"
               valueLabelDisplay="auto"
               color='primary'
+              onChange={(e) => { setSkillLevel(e.target.value) }}
+
             />
+
+            {/* <TextField
+              fullWidth label='SkillType' color="secondary"
+              placeholder="e.g., Project Management"
+              required style={textFieldStyle}
+              onChange={(e) => { setSkill(e.target.value) }}
+              // hidden
+              value={props.skillType}
+            /> */}
+
+            <Box sx={{
+              display: 'flex', alignItems: 'self-end',
+              pl: 1, pb: 1, marginTop: '5px', margin: '5px 5px'
+            }}
+            >
+              <IconButton color='secondary'>
+                <PublishOutlinedIcon onClick={skillSubmitHandler} />
+              </IconButton>
+            </Box>
+
           </form>
 
         </Box>
       </Modal>
-    </Container>
+    </Container >
   ); //END OF RETURN STATEMENT
 
   // case false:
@@ -133,7 +211,7 @@ function Skills(props) {
 
 }; //END OF COMPONENT
 
-  
+
 
 
 export default Skills;

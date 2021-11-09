@@ -1,86 +1,103 @@
 import { Container, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Skills from '../components/Skills';
+import axios from 'axios';
 
-
-let jobSkill = [
-  { skill_name: 'Change Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Performance Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Strategy Execution', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Employee Training', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Talent Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Job Analysis and Design', emp_rating: '', sup_rating: '' }
-];
-let jobSoftSkills = [
-  { skill_name: 'Change Management', emp_rating: '', sup_rating: '' }
-];
-let fieldSkill = [
-  { skill_name: 'Talent Acquisition', emp_rating: '70', sup_rating: '67' },
-  { skill_name: 'Employee Relations', emp_rating: '89', sup_rating: '88' },
-  { skill_name: '', emp_rating: '', sup_rating: '' }
-];
-let otherSkill = [
-  { skill_name: '', emp_rating: '' },
-  { skill_name: '', emp_rating: '' }
-];
-
-let skillsHRDP = [jobSkill, jobSoftSkills, fieldSkill, otherSkill]
-
-
-console.log('---- Job SKILLS ----' + jobSkill.skill_name)
-
-
+// const containerStyle = {
+//   paddingTop: `calc(100% - ${})`
+// }
 
 function Profile(props) {
 
-  const [hasSkills, setHasSkills] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [employeeData, setEmployeeData] = useState(true);
 
-  // const skillsHandler = hasSkills => {
-  //   if (skillsHRDP.length() !== 0) {
-  //     setHasSkills(true)
-  //     console.log('HAS SKILLS?: ' + hasSkills);
-  //     return hasSkills;
-  //   }
-  // }
+  // Use Effect to fetch data
+  useEffect(() => { //this will be executed by react but only under certain circumstances
+    setIsLoading(true)
 
-  return (
+    axios.get(`http://localhost:8120/get-employee-skills/${localStorage.getItem('staffnumber')}`)
+      .then(response => {
+        setEmployeeData(response.data);
+        console.log('EMPLOYEEE: ', employeeData);
+        console.log('field skills: ', employeeData.fieldSkills);
+        setIsLoading(false);
+      });
 
-    
-    <div>
-      <Header />
+  }, []); //array of dependencies (when to execute)
 
-      <Container>
-        <Grid container spacing={0}>
-          <Grid item sm={12} lg={3}>
-                     
-            <Skills skillType={'Field Specific'} skill_name={'Conflict Management'} />
-
-          </Grid>
-
-          <Grid item sm={12} lg={3}>
-            <Skills skillType={'Job Specific'} />
-          </Grid>
-
-          <Grid item sm={12} lg={3}>
-                     
-            <Skills skillType={'Soft'} skill_name={'Conflict Management'} />
-
-          </Grid>
-
-          <Grid itemsm={12} lg={3}>
-            <Skills skillType={'Other'} />
-          </Grid>
-        </Grid>
-        {/* <Typography variant='body1'>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer
-          took a galley of type and scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-        </Typography> */}
-      </Container>
+  if(isLoading) {
+    return(
+      <div>
+      <center>
+        <h1>LOADING...</h1>
+      </center>
     </div>
-  );
+    );
+
+  } else {
+
+    return (
+      <div>
+        <Header />
+  
+        <Container>
+  
+          <Grid container spacing={0}>
+  
+            <Grid item sm={12} lg={3}>
+  
+              <Skills skillType={'Field Specific'}  skills={employeeData.fieldSkills} />
+  
+            </Grid>
+  
+            <Grid item sm={12} lg={3}>
+              <Skills skillType={'Job Specific'} skills={employeeData.jobSkills} />
+            </Grid>
+  
+            <Grid item sm={12} lg={3}>
+  
+              <Skills skillType={'Soft'} skills={employeeData.jobSoftSkills} />
+  
+            </Grid>
+  
+            <Grid itemsm={12} lg={3}>
+              <Skills skillType={'Other'} skills={employeeData.otherSkills} />
+            </Grid>
+  
+          </Grid> 
+  
+            {/* <Grid item sm={12} lg={3}>
+  
+              <Skills skillType={'Field Specific'} />
+  
+            </Grid>
+  
+            <Grid item sm={12} lg={3}>
+              <Skills skillType={'Job Specific'} />
+            </Grid>
+  
+            <Grid item sm={12} lg={3}>
+  
+              <Skills skillType={'Soft'}  />
+  
+            </Grid>
+  
+            <Grid itemsm={12} lg={3}>
+              <Skills skillType={'Other'} />
+            </Grid>
+          </Grid> */}
+  
+          
+        </Container>
+      </div>
+    );
+
+  }
+
+
+  
 }
 
 export default Profile;
