@@ -1,8 +1,7 @@
-import { withTheme } from '@emotion/react';
-
 import {
   AppBar, Avatar, Container, Drawer, Link, Toolbar, Divider,
-  Hidden, IconButton, SwipeableDrawer, List, ListItem, Button, Typography, CssBaseline, Paper, CardHeader, Card, CardActionArea, CardContent
+  Hidden, IconButton, SwipeableDrawer, List, ListItem, Button, Typography, CssBaseline, 
+  Paper, CardHeader, Card, CardActionArea, CardContent
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -57,7 +56,13 @@ const loadingImage = {
 
 
 
-function Header(props) {
+
+
+  
+
+
+
+function SupervisorHeader(props) {
 
   // const style = useStyles();
   const [isLoading, setIsLoading] = useState(false);
@@ -73,7 +78,6 @@ function Header(props) {
   }
 
 
-
   useEffect(() => {
     setIsLoading(true)
     axios.get(`http://localhost:8120/get-subordinates/${localStorage.getItem('staffnumber')}`)
@@ -84,13 +88,9 @@ function Header(props) {
       })
   }, [])
 
-  // SUPERVISOR 
-  if (!isLoading && employeeObject.supervisor == true) {
 
-    return (
-      <div>
-      {/* // NORMAL EMPLOYEE */}
-  
+  return (
+    <div>
         <CssBaseline />
         <AppBar position='sticky' color='primary' maxWidth=''>
 
@@ -155,13 +155,12 @@ function Header(props) {
                 </Link>
               </ListItem>
               <ListItem>
-                <Link style={linkStyle} color='primary' variant='button' underline='none' href='#'>
+                <Link style={linkStyle} color='primary' variant='button' underline='none' href='/login'>
                   OPTIONS
                 </Link>
               </ListItem>
               <ListItem>
-                <Link style={linkStyle} color='primary' variant='button' underline='none' href='/'
-                onClick={endSession}>
+                <Link style={linkStyle} color='primary' variant='button' underline='none' href='/login'>
                   LOG OUT
                 </Link>
               </ListItem>
@@ -208,7 +207,33 @@ function Header(props) {
             <Divider />
 
 
+            {/* Subordinates */}
+            <Typography variant='h6'>
+              Subordinates
+            </Typography>
 
+            <Box sx={{
+              width: '90%', height: '35%', margin: '10px 5px',
+              padding: '2px 2px', border: '1px solid grey',
+              borderRadius: 4, overflow: 'auto'
+            }}>
+
+              {employees.map(emp => (
+                <Card sx={{ maxWidth: '345' }}>
+                  <CardActionArea>
+                    <CardContent>
+                      <Typography gutterBottom variant="h6" component="div">
+                        {emp.staffnumber}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {emp.jobTitle}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              ))}
+
+            </Box>
             <Divider />
 
             <Button
@@ -235,25 +260,8 @@ function Header(props) {
           {props.children}
         </div>
 
-
-    </div>
-      
-    );
-  }
-  
-  else {
-    return (
-      <div style={loadingStyle}>
-        <center>
-          <img src='https://flevix.com/wp-content/uploads/2019/12/Barline-Loading-Images-1.gif'
-            alt='Loading...'
-            style={loadingImage}
-
-          />
-          <Typography>Loading...</Typography>
-        </center>
       </div>
-    );
-  }
+  );
 }
-export default Header;
+
+export default SupervisorHeader;

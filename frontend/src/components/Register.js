@@ -1,7 +1,7 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {
   Container, Grid, Paper, Avatar, Typography, TextField, Button, FormControl, FormLabel, RadioGroup, Radio,
-  FormControlLabel, Select, Checkbox, MenuItem, InputLabel
+  FormControlLabel, Select, Checkbox, MenuItem, InputLabel, List, ListItem
 } from '@mui/material'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Link } from 'react-router-dom';
@@ -12,9 +12,6 @@ import axios from 'axios';
 
 
 function Register() {
-
-
-
   const paperStyle = {
     padding: '10px 20px',
     width: 'fit-content',
@@ -30,13 +27,23 @@ function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmed, setConfirmed] = useState('');
+  const [supervisorNo, setSupervisorNo] = useState('');
   const [isSupervisor, setIsSupervisor] = useState(false);
   const [department, setDepartment] = useState('');
   const [jobTitle, setJobTitle] = useState('');
   const [field, setField] = useState('');
+  const [employees, setEmployees] = useState([]);
+
+  const loadingStyle = {
+    padding: 10
+  }
+  const loadingImage = {
+    maxWidth: '90%',
+    margin: ' 3px auto 3px 0px'
+  }
 
   function handleRegister(e) {
-    e.preventDefault();    
+    e.preventDefault();
 
     if (password === confirmed) {
       axios.post('http://localhost:8120/register', {
@@ -47,19 +54,17 @@ function Register() {
         field: field,
         department: department,
         supervisor: isSupervisor == 'on' ? true : false,
+        supervisorNo: supervisorNo,
         jobTitle: jobTitle
       }).then((response) => {
         alert(response);
         alert(': User ' + staffnumber + ' created')
-        
+
       })
     } else {
       alert("Passwords Don't Match");
       // alert("Invalid Input");
     }
-
-
-
   };
   const departments = [
     // 'Department of Computing and Informatics',
@@ -69,121 +74,176 @@ function Register() {
     { key: 4, value: 'Department of Education' }
   ]
 
-  function dataTrigger() {
-    axios.post('http://localhost:8120/register',{
-      staffnumber: 'staffnumber',
-      email: 'email'
-    })
-  }
+  // function dataTrigger() {
+  //   axios.post('http://localhost:8120/register', {
+  //     staffnumber: 'staffnumber',
+  //     email: 'email'
+  //   })
+  // }
+  const [isLoading, setIsLoading] = useState(true);
 
-  return (
-    <Container>
+  
 
-      <Paper elevation={20} style={paperStyle}>
+  useEffect(() => {
+    setIsLoading(true)
 
-        <Typography
-          variant="h2"
-          // color="textPrimary"
-          component="h2"
-          gutterBottom
-          color='primary'
-        >
-          Register Here
-        </Typography>
+    axios.get('http://localhost:8120/getAllEmployees')
+      .then(response => {
+        setEmployees(response.data)
+        // return staffNumbers;
+        console.log('Staff Numbers', employees);
+        setIsLoading(false)
+      });
 
-        <form noValidate autoComplete="off"> 
+  }, []);
 
-          <Grid container spacing={5} align='left' >
-            {/* FIELDS / EMPLOYEE INFO */}
-            <Grid item xs={12} md={8} lg={9}>
-              <TextField
-                fullWidth label='Staff Number' color="primary"
-                placeholder="219000000" required
-                style={textFieldStyle}
-                onChange={(e) => { setStaffnumber(e.target.value) }}
-              />
-              <TextField
-                fullWidth label='Email' color="primary"
-                placeholder="example@nust.na" required
-                style={textFieldStyle}
-                onChange={(e) => { setEmail(e.target.value) }}
-              />
-              <TextField
-                fullWidth label='Field' color="primary"
-                placeholder="e.g., IT - Information Technology" required
-                style={textFieldStyle}
-                onChange={(e) => { setField(e.target.value) }}
-              />
-              <TextField
-                fullWidth label='Job Title' color="primary"
-                placeholder="e.g., Lecturer" required
-                style={textFieldStyle}
-                onChange={(e) => { setJobTitle(e.target.value) }}
-              />
-              <TextField
-                fullWidth label='Password' color="primary" type='password'
-                placeholder="************" required
-                style={textFieldStyle}
-                onChange={(e) => { setPassword(e.target.value) }}
-              />
-              <TextField
-                fullWidth label='Confirm Password' color="primary" type='password'
-                placeholder="************" required
-                style={textFieldStyle}
-                onChange={(e) => { setConfirmed(e.target.value) }}
-              />
-            </Grid>
+  if (isLoading) {
+    return (
+      <div style={loadingStyle}>
+        <center>
+          <img src='https://flevix.com/wp-content/uploads/2019/12/Barline-Loading-Images-1.gif'
+            alt='Loading...'
+            style={loadingImage}
 
-            {/* SELECTIONS */}
-            <Grid item xs={12} md={4} lg={3} style={spacingStyle}>
-              <FormControl>
-                <FormLabel>Select a Department</FormLabel>
+          />
+          <Typography>Loading...</Typography>
+        </center>
+      </div>
+    );
+  } else {
+    return (
+      <Container>
+        <Paper elevation={20} style={paperStyle}>
 
-                <RadioGroup onChange={(e) => {setDepartment(e.target.value)}}>
-                  {departments.map((department) => (
-                    <FormControlLabel key={department.key} value={department.value} control={<Radio color='secondary' />}
-                      label={department.value} />
-                  ))}
-                  {/* <FormControlLabel value='money' control={<Radio color='secondary' />} label='Money' />
-                  <FormControlLabel value='todos' control={<Radio color='secondary' />} label='Todos' />
-                  <FormControlLabel value='reminders' control={<Radio color='secondary' />} label='Reminders' />
-                  <FormControlLabel value='work' control={<Radio color='secondary' />} label='Work' /> */}
-                </RadioGroup>
-              </FormControl>
+          <Typography
+            variant="h2"
+            // color="textPrimary"
+            component="h2"
+            gutterBottom
+            color='primary'
+          >
+            Register Here
+          </Typography>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="checkedB"
-                    color="secondary"
-                    onChange={(e) => { setIsSupervisor(e.target.value) }}
+          <form noValidate autoComplete="off">
 
-                    style={spacingStyle}
+            <Grid container spacing={1.5} align='left' >
+
+              {/* FIELDS / EMPLOYEE INFO */}
+              <Grid item xs={12} md={12} lg={12}>
+                <TextField
+                  fullWidth label='Staff Number' color="primary"
+                  placeholder="219000000" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setStaffnumber(e.target.value) }}
+                />
+              </Grid>
+
+              <Grid item xs={12} md={4} lg={9}>
+                <TextField
+                  fullWidth label='Email' color="primary"
+                  placeholder="example@nust.na" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setEmail(e.target.value) }}
+                />
+                <TextField
+                  fullWidth label='Field' color="primary"
+                  placeholder="e.g., IT - Information Technology" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setField(e.target.value) }}
+                />
+                <TextField
+                  fullWidth label='Job Title' color="primary"
+                  placeholder="e.g., Lecturer" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setJobTitle(e.target.value) }}
+                />
+              </Grid>
+
+              {/* Select Supervisor */}
+              <Grid item xs={12} md={4} lg={9}>
+                <FormControl fullWidth style={textFieldStyle}>
+                  <InputLabel>Supervisor</InputLabel>
+                  <Select
+                    placeholder={'219000000'}
+                    label='Supervisor'
+                  onChange={(e) => setSupervisorNo(e.target.value)}
+                  >
+                    {employees.map(emp => (
+                      <MenuItem value={emp.staffnumber}>{emp.staffnumber}</MenuItem>
+                    ))}
+                    {/* <MenuItem value={'219000000'}>Kauly Peter - 219000000</MenuItem>
+                  <MenuItem value={'219000002'}>Random User - 219000002</MenuItem> */}
+                  </Select>
+                </FormControl>
+                <TextField
+                  fullWidth label='Password' color="primary" type='password'
+                  placeholder="************" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setPassword(e.target.value) }}
+                />
+                <TextField
+                  fullWidth label='Confirm Password' color="primary" type='password'
+                  placeholder="************" required
+                  style={textFieldStyle}
+                  onChange={(e) => { setConfirmed(e.target.value) }}
+                />
+              </Grid>
+
+              {/* SELECTIONS */}
+              <Grid item xs={12} md={4} lg={3} style={spacingStyle}>
+                <FormControl style={textFieldStyle}>
+                  <FormLabel>Select a Department</FormLabel>
+
+                  <RadioGroup onChange={(e) => { setDepartment(e.target.value) }}>
+                    {departments.map((department) => (
+                      <FormControlLabel key={department.key} value={department.value} control={<Radio color='secondary' />}
+                        label={department.value} />
+                    ))}
+
+                  </RadioGroup>
+                </FormControl>
+
+              </Grid>
+
+              <Grid item xs={12} md={12} lg={12}>
+                <Typography style={spacingStyle} align='center'>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="checkedB"
+                        color="secondary"
+                        value={isSupervisor}
+                        onChange={(e) => { setIsSupervisor(e.target.value) }}
+
+                        style={spacingStyle}
+                      />
+                    }
+                    label="Check this if you are a Supervisor?"
                   />
-                }
-                label="Check this if you are a Supervisor?"
-              />
+                </Typography>
+                <Typography style={spacingStyle} align='center'>Already have an account? <Link to='/'>Log in</Link></Typography>
 
-              <Typography style={spacingStyle}>Already have an account? <Link to='/'>Log in</Link></Typography>
+                <Typography style={spacingStyle} align='center'>
+                  <Button type='submit' variant='contained' color='primary' endIcon={<KeyboardArrowRightIcon />}
+                    onClick={handleRegister}
+                  >
+                    Register
+                  </Button>
+                </Typography>
+              </Grid>
 
-
-              <Button type='submit' variant='contained' color='primary' endIcon={<KeyboardArrowRightIcon />}
-                onClick={handleRegister}>Register</Button>
-
-                <Button onClick={dataTrigger}>DATA</Button>
 
             </Grid>
-            {/* <TextField fullWidth label='staffnumber' placeholder="Enter your Staff Number" required/> */}
+
+          </form>
 
 
-          </Grid>
+        </Paper>
+      </Container>
 
-        </form>
-
-      </Paper>
-    </Container>
-  )
-
+    )
+  }
 
 
 }

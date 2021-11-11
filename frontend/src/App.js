@@ -1,5 +1,4 @@
-import { ThemeProvider } from '@emotion/react';
-import { createTheme } from '@mui/material';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Login from './components/Login';
 // import  from 'react-dom'
@@ -7,6 +6,7 @@ import Register from './components/Register';
 import Profile from './pages/Profile';
 import { StyledEngineProvider } from '@mui/material/styles';
 import UpdateProfile from './components/UpdateProfile';
+import SupervisorProfile from './pages/SupervisorProfile';
 
 
 const theme = createTheme({
@@ -43,15 +43,19 @@ function App() {
   return (
     <StyledEngineProvider>
       <ThemeProvider theme={theme}>
+      
         <Router>
           <Switch>
             <Route exact path="/profile" component={Profile} />
+            <Route exact path="/supervisor-profile" 
+            component={SupervisorProfile} />
             <Route path="/register" component={Register} />
             <Route path="/update" component={UpdateProfile} />
             <Route path="/" component={Login} />
             {/* <Route path="/profile" component={Profile} /> */}
           </Switch>
         </Router>
+
       </ThemeProvider>
     </StyledEngineProvider>
 

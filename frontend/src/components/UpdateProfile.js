@@ -1,11 +1,15 @@
 import React, { Component, useEffect, useState } from 'react';
 import {
   Container, Grid, Paper, Avatar, Typography, TextField, Button, FormControl, FormLabel, RadioGroup, Radio,
-  FormControlLabel, Select, Checkbox, MenuItem, InputLabel
+  FormControlLabel, Select, Checkbox, MenuItem, InputLabel, IconButton
 } from '@mui/material'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+
+import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { Box } from '@mui/system';
 // import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 
 
@@ -13,21 +17,21 @@ import axios from 'axios';
 
 function UpdateProfile() {
 
-  
+  const history = useHistory();
 
   //Populate fields with current data
   useEffect(() => {
     axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
-    .then(response => {
-      const res = response.data;
-      console.log('RESPONSE: ', res)
+      .then(response => {
+        const res = response.data;
+        console.log('RESPONSE: ', res)
 
-      setEmail(res.email)
-      setIsSupervisor(res.supervisor)
-      setDepartment(res.department)
-      setJobTitle(res.jotTitle)
-      setField(res.field)
-    })
+        setEmail(res.email)
+        setIsSupervisor(res.supervisor)
+        setDepartment(res.department)
+        setJobTitle(res.jotTitle)
+        setField(res.field)
+      })
   });
 
   const paperStyle = {
@@ -37,6 +41,7 @@ function UpdateProfile() {
   }
   const textFieldStyle = { margin: "10px auto" }
   const spacingStyle = { margin: "10px auto" }
+  const closeButtonStyle = { marginLeft: "auto" }
   // const headerStyle = { margin: 0 }
   // const avatarStyle = { backgroundColor: '#1bbd7e' }
   // const marginTop = { marginTop: 5 }
@@ -51,7 +56,7 @@ function UpdateProfile() {
   const [field, setField] = useState('');
 
   function handleUpdate(e) {
-    e.preventDefault();    
+    e.preventDefault();
 
     if (password === confirmed) {
       axios.post('http://localhost:8120/updateEmployee', {
@@ -83,7 +88,7 @@ function UpdateProfile() {
   ]
 
   function dataTrigger() {
-    axios.post('http://localhost:8120/register',{
+    axios.post('http://localhost:8120/register', {
       staffnumber: 'staffnumber',
       email: 'email'
     })
@@ -94,27 +99,39 @@ function UpdateProfile() {
 
       <Paper elevation={20} style={paperStyle}>
 
-        <Typography
-          variant="h2"
-          // color="textPrimary"
-          component="h2"
-          gutterBottom
-          color='primary'
-        >
-          Update Here
-        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+          <Typography
+            variant="h2"
+            // color="textPrimary"
+            component="h2"
+            gutterBottom
+            color='primary'
+          >
+            Update Here
+          </Typography>
 
-        <form noValidate autoComplete="off"> 
+          <Typography style={closeButtonStyle} align='center'>
+            <IconButton type='submit' color='primary'
+              onClick={handleUpdate}>
+              <CloseOutlinedIcon onClick={() => history.push('/profile')} />
+            </IconButton>
+          </Typography>
+        </Box>
 
-          <Grid container spacing={5} align='left' >
+        <form noValidate autoComplete="off">
+
+          <Grid container spacing={1} align='left' >
             {/* FIELDS / EMPLOYEE INFO */}
-            <Grid item xs={12} md={8} lg={9}>
+            <Grid item xs={12} md={12} lg={12}>
               <TextField
                 fullWidth label='Staff Number' color="primary" variant='filled'
                 placeholder="219000000" required disabled
                 style={textFieldStyle} value={staffnumber}
                 onChange={(e) => { setStaffnumber(e.target.value) }}
               />
+            </Grid>
+            <Grid item xs={12} md={4} lg={9}>
+
               <TextField
                 fullWidth label='Email' color="primary" variant='filled'
                 placeholder="example@nust.na" required
@@ -133,10 +150,18 @@ function UpdateProfile() {
                 style={textFieldStyle} value={jobTitle}
                 onChange={(e) => { setJobTitle(e.target.value) }}
               />
+            </Grid>
+            <Grid item xs={12} md={4} lg={9}>
+              <TextField
+                fullWidth label='Supervisor' color="primary" variant='filled'
+                placeholder="e.g., Jane/John Doe - 21900000" required
+                style={textFieldStyle} value={jobTitle}
+                onChange={(e) => { setJobTitle(e.target.value) }}
+              />
               <TextField
                 fullWidth label='Password' color="primary" type='password'
                 placeholder="************" required variant='filled'
-                style={textFieldStyle} 
+                style={textFieldStyle}
                 onChange={(e) => { setPassword(e.target.value) }}
               />
               <TextField
@@ -152,7 +177,7 @@ function UpdateProfile() {
               <FormControl>
                 <FormLabel>Select a Department</FormLabel>
 
-                <RadioGroup onChange={(e) => {setDepartment(e.target.value)}}>
+                <RadioGroup onChange={(e) => { setDepartment(e.target.value) }}>
                   {departments.map((departmentItem) => (
                     <FormControlLabel key={departmentItem.key} value={departmentItem.value} control={<Radio color='secondary' />}
                       label={departmentItem.value} />
@@ -164,27 +189,31 @@ function UpdateProfile() {
                 </RadioGroup>
               </FormControl>
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="checkedB"
-                    color="secondary"
-                    value={isSupervisor}
-                    onChange={(e) => { setIsSupervisor(e.target.value) }}
 
-                    style={spacingStyle}
-                  />
-                }
-                label="Check this if you are a Supervisor?"
-              />
+            </Grid>
+            <Grid item xs={12} md={12} lg={12}>
+              <Typography style={spacingStyle} align='center'>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="checkedB"
+                      color="secondary"
+                      value={isSupervisor}
+                      onChange={(e) => { setIsSupervisor(e.target.value) }}
 
-              <Typography style={spacingStyle}>Already have an account? <Link to='/'>Log in</Link></Typography>
+                      style={spacingStyle}
+                    />
+                  }
+                  label="Check this if you are a Supervisor?"
+                />
+              </Typography>
 
+              <Typography style={spacingStyle} align='center'>
+                <Button type='submit' variant='contained' color='primary' endIcon={<KeyboardArrowRightIcon />}
+                  onClick={handleUpdate}>Update</Button>
+              </Typography>
 
-              <Button type='submit' variant='contained' color='primary' endIcon={<KeyboardArrowRightIcon />}
-                onClick={handleUpdate}>Update</Button>
-
-                <Button onClick={dataTrigger}>DATA</Button>
+              {/* <Button onClick={dataTrigger}>DATA</Button> */}
 
             </Grid>
             {/* <TextField fullWidth label='staffnumber' placeholder="Enter your Staff Number" required/> */}

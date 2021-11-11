@@ -34,13 +34,23 @@ function Login() {
 
         if (response.data == '') {
           alert('INVALID USERNAME OR PASSWORD, Try Again!')
-        } else {
+        } 
+        
+        if (response.data.supervisor == false) {
+
           console.log('Login Response: ' + response.data.staffnumber);
           // alert(': User ' + email + ' Logged in successfully');
           console.log(response);
           localStorage.setItem('staffnumber', response.data.staffnumber);
 
           history.push('/profile');
+        } else {
+          console.log('Login Response: ' + response.data.staffnumber);
+          // alert(': User ' + email + ' Logged in successfully');
+          console.log(response);
+          localStorage.setItem('staffnumber', response.data.staffnumber);
+
+          history.push('/supervisor-profile');
         }
       })
   };

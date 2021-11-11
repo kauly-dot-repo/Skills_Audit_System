@@ -1,86 +1,114 @@
-import { Container, Grid, Typography } from '@mui/material';
-import React, { useState } from 'react';
-import Header from '../components/Header';
+import { Container, Divider, Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import Skills from '../components/Skills';
+import axios from 'axios';
+import SupervisorHeader from '../components/SupervisorDrawer';
 
+// const containerStyle = {
+//   paddingTop: `calc(100% - ${})`
+// }
 
-let jobSkill = [
-  { skill_name: 'Change Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Performance Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Strategy Execution', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Employee Training', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Talent Management', emp_rating: '', sup_rating: '' },
-  { skill_name: 'Job Analysis and Design', emp_rating: '', sup_rating: '' }
-];
-let jobSoftSkills = [
-  { skill_name: 'Change Management', emp_rating: '', sup_rating: '' }
-];
-let fieldSkill = [
-  { skill_name: 'Talent Acquisition', emp_rating: '70', sup_rating: '67' },
-  { skill_name: 'Employee Relations', emp_rating: '89', sup_rating: '88' },
-  { skill_name: '', emp_rating: '', sup_rating: '' }
-];
-let otherSkill = [
-  { skill_name: '', emp_rating: '' },
-  { skill_name: '', emp_rating: '' }
-];
-
-let skillsHRDP = [jobSkill, jobSoftSkills, fieldSkill, otherSkill]
-
-
-console.log('---- Job SKILLS ----' + jobSkill.skill_name)
-
-
-
-function Profile(props) {
-
-  const [hasSkills, setHasSkills] = useState(false);
-
-  // const skillsHandler = hasSkills => {
-  //   if (skillsHRDP.length() !== 0) {
-  //     setHasSkills(true)
-  //     console.log('HAS SKILLS?: ' + hasSkills);
-  //     return hasSkills;
-  //   }
-  // }
-
-  return (
-
-    
-    <div>
-      <Header />
-
-      <Container>
-        <Grid container spacing={0}>
-          <Grid item sm={12} lg={3}>
-                     
-            <Skills skillType={'Field Specific'} skill_name={'Conflict Management'} />
-
-          </Grid>
-
-          <Grid item sm={12} lg={3}>
-            <Skills skillType={'Job Specific'} />
-          </Grid>
-
-          <Grid item sm={12} lg={3}>
-                     
-            <Skills skillType={'Soft'} skill_name={'Conflict Management'} />
-
-          </Grid>
-
-          <Grid itemsm={12} lg={3}>
-            <Skills skillType={'Other'} />
-          </Grid>
-        </Grid>
-        {/* <Typography variant='body1'>
-          Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-          Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer
-          took a galley of type and scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
-        </Typography> */}
-      </Container>
-    </div>
-  );
+const loadingStyle = {
+  padding: 10
+}
+const loadingImage = {
+  maxWidth: '90%',
+  margin: ' 3px auto 3px 0px'
 }
 
-export default Profile;
+function SupervisorProfile(props) {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [employeeData, setEmployeeData] = useState(true);
+  const [employee, setEmployee] = useState(true);
+
+  // Use Effect to fetch data
+  useEffect(() => { //this will be executed by react but only under certain circumstances
+    setIsLoading(true)
+
+    axios.get(`http://localhost:8120/get-employee-skills/${localStorage.getItem('staffnumber')}`)
+      .then(response => {
+        setEmployeeData(response.data);
+        console.log('EMPLOYEE Data: ', employeeData);
+        console.log('field skills: ', employeeData.fieldSkills);
+        setIsLoading(false);
+      });
+
+      axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
+      .then(response => {
+        setEmployee(response.data);
+        console.log('EMPLOYEE: ', employee);
+        // console.log('field skills: ', employee.fieldSkills);
+        setIsLoading(false);
+      });
+
+  }, []); //array of dependencies (when to execute)
+
+  if (isLoading) {
+    return (
+      <div style={loadingStyle}>
+        <center>
+          <img src='https://flevix.com/wp-content/uploads/2019/12/Barline-Loading-Images-1.gif'
+            alt='Loading...'
+            style={loadingImage}
+
+          />
+          <Typography>Loading...</Typography>
+        </center>
+      </div>
+    );
+
+  } else {
+
+    return (
+      <div>
+        <SupervisorHeader employee={employee}>
+
+          <Container>
+          <Divider />
+            <Typography variant='h3' align='center' 
+            color='primary'>
+              WELCOME SUPERVISOR !
+            </Typography>
+
+            <Divider />
+
+            <Grid container spacing={0} justifyContent="center"
+              alignItems="center"
+              style={{ maxWidth: '100%' }}
+            >
+
+              <Grid item xs={12} md={6} lg={3} xl={3} align='center'>
+
+                <Skills skillType={'Field Specific'} skills={employeeData.fieldSkills} />
+
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={3} xl={3} align='center'>
+                <Skills skillType={'Job Specific'} skills={employeeData.jobSkills} />
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={3} xl={3} align='center'>
+
+                <Skills skillType={'Soft'} skills={employeeData.jobSoftSkills} />
+
+              </Grid>
+
+              <Grid item xs={12} md={6} lg={3} xl={3} align='center'>
+                <Skills skillType={'Other'} skills={employeeData.otherSkills} />
+              </Grid>
+
+            </Grid>
+          </Container>
+
+        </SupervisorHeader>
+      </div>
+    );
+
+  }
+
+
+
+}
+
+export default SupervisorProfile;

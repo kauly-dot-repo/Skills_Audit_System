@@ -8,9 +8,13 @@ import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
 import axios from 'axios';
 
 
-
+const buttonStyle = { 
+  margin: '5px 0px 20px 0px',
+  padding: '10px 50px'
+}
 const spaceStyle = { margin: 'auto' };
 const textFieldStyle = { margin: "10px auto" }
+const titleFieldStyle = { margin: "20px auto" }
 const dividerStyle = { margin: "auto auto", height: '100px' }
 const style = {
   position: 'absolute',
@@ -23,6 +27,8 @@ const style = {
   boxShadow: '1px 1px 18px 1px rgb(27, 44, 93)',
   p: 4,
 };
+
+const background = { backgroundColor: '#fefefe'}
 
 function Skills(props) {
 
@@ -91,54 +97,60 @@ function Skills(props) {
     window.location.reload();
   }
 
-  
+
   return (
     <Container>
-      {/* <Grid container spacing={3}> 
-            <Grid item sm={12} lg={3}> */}
+    {/* Skill Type Heading */}
+      <div style={background}>
+        <Typography variant='h4' 
+        style={titleFieldStyle} 
+        align='center'>{props.skillType} Skills</Typography>
+      </div>
+       
+      <Divider />
+
+      {/* Skills */}
       <Box component="div" sx={{
-        width: '100%', height: 'fit-content', margin: '10px 5px',
+        width: '100%', height: '300px', margin: '10px 5px',
         padding: '5px 5px', backgroundColor: 'primary',
         border: '1px solid grey', borderRadius: 4,
+        overflow: 'auto',
         '&:hover': {
           border: '1px solid rgb(252, 175, 40)',
           // boxShadow: '1px 1px 18px 1px rgb(252, 175, 40)',
         },
       }}>
 
-        {/* Skill Type Heading */}
-        <Typography variant='h4' align='center'>{props.skillType} Skills</Typography>
-
-        <Divider />
-
-
-        {/* Skills */}
-        <div>
+        
+        <Grid container spacing={0.5}>
           {/* map of skills */}
-
-
           {skillArray.map(skillItem => (
-            <SkillCard   skill={skillItem} />
+            <Grid item xs={12} sm={6} md={6} lg={12}>
+            <SkillCard skill={skillItem} skill_type={props.skillType} />
+            </Grid>
           ))}
-
-          {/* <SkillCard  skill_name={'Project Management'} jobTitle={'Lecturer'} /> */}
-
-          {/* <Divider />
-
-          <Box style={dividerStyle}></Box>
-
-          <Divider /> */}
-
-          {/* Add Skill Icon */}
-          <Box sx={{ display: 'flex', alignItems: 'self-end', pl: 1, pb: 1, marginTop: '5px', margin: '5px 5px' }}>
-            <IconButton color='secondary'>
-              <AddCircleOutlineOutlinedIcon onClick={() => setModalOpen(true)} />
-            </IconButton>
-          </Box>
-
-        </div>
+        </Grid>
 
       </Box>
+
+      {/* <Box sx={{
+        display: 'flex', alignItems: 'self-end', pl: 1, pb: 1,
+        marginTop: '5px', margin: '5px 5px', backgroundColor: 'primary'
+      }}> */}
+      <Typography align='center'>
+        <Button
+          variant='contained'
+          align='center'
+          color='secondary'
+          endIcon={<AddCircleOutlineOutlinedIcon />}
+          style={buttonStyle}
+          onClick={() => setModalOpen(true)}
+        >
+          Add New Skill
+        </Button>
+      </Typography>
+      {/* </Box> */}
+
 
       {/* ADD SKILL MODAL */}
       <Modal
@@ -148,7 +160,7 @@ function Skills(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <IconButton sx={{ paddingLeft: 48, paddingTop: 0 }}>
+          <IconButton sx={{ paddingLeft: 40, paddingTop: 0 }}>
             <CloseOutlinedIcon onClick={() => setModalOpen(false)} />
           </IconButton>
           <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -164,10 +176,10 @@ function Skills(props) {
               onChange={(e) => { setSkillName(e.target.value) }}
             />
 
-            <FormLabel>Rate you Compentncy Below</FormLabel>
+            <FormLabel>Rate Your Compentncy Below</FormLabel>
             <Slider
               size="small"
-              defaultValue={70}
+              defaultValue={0}
               aria-label="Small"
               valueLabelDisplay="auto"
               color='primary'
@@ -198,7 +210,8 @@ function Skills(props) {
 
         </Box>
       </Modal>
-    </Container >
+
+    </Container>
   ); //END OF RETURN STATEMENT
 
   // case false:
