@@ -15,7 +15,7 @@ const employee = new Schema({
   field: {type:String, required: false}, //category
   department: {type:String, required: false}, 
   supervisor: {type: Boolean, default: false},
-  supervisorNo: {type:String, required: false},
+  supervisorNo: {type:String, required: false}, //for subordinates
   jobTitle: {type:String, required: true}, 
 
   //Skill categories

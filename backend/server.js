@@ -29,6 +29,7 @@ app.post('/register', async (req, res) => {
     //drop down - depending on field
     department: data.department,
     supervisor: data.supervisor,
+    supervisorNo: data.supervisorNo,
     //drop down - depending on field
     jobTitle: data.jobTitle
   }).save();
@@ -96,9 +97,13 @@ app.get('/getAllEmployees', (req, res) => {
       __v: 0,
 
     })
-    .then(result => res.send(result))
+    .then(result => {
+      console.log('RESULT: ', result);
+      res.send(result)
+    })
 
 });
+
 
 //Delete ONE Employee--------------------------------------
 app.delete("/deleteEmployee", (req, res) => {
@@ -129,16 +134,15 @@ app.delete('/deleteAllEmployees', (req, res) => {
 
     })
     .then(result => res.send(result))
-
 });
 
 
 //Retrieve Subodinates
-app.get('/get-subordinates', (req, res) => {
+app.get('/get-subordinates/:supervisorNo', (req, res) => {
   const supervisorNo = req.params.supervisorNo;
 
   return Employee.find(
-    { supervisorNo },
+    { supervisorNo:supervisorNo },
     { email: 0, password: 0 }
   ).then(result => {
     console.log('SUBORDINATES: ', result)
@@ -149,7 +153,6 @@ app.get('/get-subordinates', (req, res) => {
 
 
 //SKILLS ACTIONS
-
 //Retrieve all skills
 app.get('/get-employee-skills/:staffnumber', (req, res) => {
   const staffnumber = req.params.staffnumber;
@@ -167,9 +170,124 @@ app.get('/get-employee-skills/:staffnumber', (req, res) => {
     });
 });
 
+//DELETE A SKILL
+//Field-Related Skill
+app.post('/delete-field-skill', (req, res) => {
+  const data = req.body;
+  console.log('DELETE Field REQUEST', data);
 
+  return Employee.updateOne(
+    { staffnumber: data.staffnumber },
+    {
+      $pull: {
+        fieldSkills: {
+          skill_name: data.skill_name,
+          emp_rating: data.emp_rating,
+          sup_rating: data.sup_rating
+        }
+      }
+    },
+    {
+      multi: true,
+      upsert: true
+    }
+  )
+    .then(
+      result => {
+        console.log('DELETE Field RESULT: ', result)
+        return res.send(result);
+      }
+    );
+});
 
-//Add New Skill -------------------------------
+//Job-Related Skill
+app.post('/delete-job-skill', (req, res) => {
+  const data = req.body;
+  console.log('DELETE Job REQUEST', data);
+
+  return Employee.updateOne(
+    { staffnumber: data.staffnumber },
+    {
+      $pull: {
+        jobSkills: {
+          skill_name: data.skill_name,
+          emp_rating: data.emp_rating,
+          sup_rating: data.sup_rating
+        }
+      }
+    },
+    {
+      multi: true,
+      upsert: true
+    }
+  )
+    .then(
+      result => {
+        console.log('DELETE Job RESULT: ', result)
+        return res.send(result);
+      }
+    );
+});
+
+//Job-Related Soft Skill
+app.post('/delete-soft-skill', (req, res) => {
+  const data = req.body;
+  console.log('DELETE Soft REQUEST', data);
+
+  return Employee.updateOne(
+    { staffnumber: data.staffnumber },
+    {
+      $pull: {
+        jobSoftSkills: {
+          skill_name: data.skill_name,
+          emp_rating: data.emp_rating
+          // sup_rating: data.sup_rating
+        }
+      }
+    },
+    {
+      multi: true,
+      upsert: true
+    }
+  )
+    .then(
+      result => {
+        console.log('DELETE Soft RESULT: ', result)
+        return res.send(result);
+      }
+    );
+});
+
+//Other Skill
+app.post('/delete-other-skill', (req, res) => {
+  const data = req.body;
+  console.log('DELETE Other REQUEST', data);
+
+  return Employee.updateOne(
+    { staffnumber: data.staffnumber },
+    {
+      $pull: {
+        otherSkills: {
+          skill_name: data.skill_name,
+          emp_rating: data.emp_rating,
+          sup_rating: data.sup_rating
+        }
+      }
+    },
+    {
+      multi: true,
+      upsert: true
+    }
+  )
+    .then(
+      result => {
+        console.log('DELETE Other RESULT: ', result)
+        return res.send(result);
+      }
+    );
+});
+
+//ADD NEW SKILL --------------------------------------
 //Field-Related Skill
 app.post('/new-field-skill', (req, res) => {
   const data = req.body;
@@ -325,45 +443,70 @@ app.post('/supervisor-job-rating', (req, res) => {
 });
 
 
-
-//Update Employee Rating -------------------------------
+//UPDATE EMPLOYEE RATING -------------------------------
 //Field-Related Skill
 app.post('/update-field-rating', (req, res) => {
-  const data = re.body;
+  const data = req.body;
+  console.log('UPDATE FIELD REQUEST: ', data);
 
   return Employee.updateOne(
     {
-      email: data.email,
+      staffnumber: data.staffnumber,
       "fieldSkills.skill_name": data.skill_name
     },
     {
       $set: {
-        "fieldSkills.$.sup_rating": data.sup_rating
+        "fieldSkills.$.emp_rating": data.emp_rating
       }
     },
     { multi: true, upsert: true }
   ).then(result => {
+    console.log('UPDATE FIELD SKILL RESULT:', result)
     return res.send(result);
   });
 });
 
 //Job-Related Skill
 app.post('/update-job-rating', (req, res) => {
-  const data = re.body;
+  const data = req.body;
+  console.log('JOB RATING REQUEST:', data);
 
   return Employee.updateOne(
     {
-      email: data.email,
+      staffnumber: data.staffnumber,
       "jobSkills.skill_name": data.skill_name
     },
     {
       $set: {
-        "jobSkills.$.sup_rating": data.sup_rating
+        "jobSkills.$.emp_rating": data.emp_rating
+      }
+    },
+    { multi: true, upsert: true }
+  ).then(result => {
+    console.log('JOB RATING: ', result);
+    return res.send(result);
+  });
+});
+
+//Soft Skills
+app.post('/update-soft-rating', (req, res) => {
+  const data = req.body;
+  console.log('SOFT RATING REQUEST:', data);
+
+  return Employee.updateOne(
+    {
+      staffnumber: data.staffnumber,
+      "jobSoftSkills.skill_name": data.skill_name
+    },
+    {
+      $set: {
+        "jobSoftSkills.$.emp_rating": data.emp_rating
       }
     },
     { multi: true, upsert: true }
   ).then(result => {
     return res.send(result);
+    console.log('SOFT SKILL RATING: ', result);
   });
 });
 
@@ -373,12 +516,12 @@ app.post('/update-other-rating', (req, res) => {
 
   return Employee.updateOne(
     {
-      email: data.email,
+      saffnumber: data.saffnumber,
       "otherSkills.skill_name": data.skill_name
     },
     {
       $set: {
-        "otherSkills.$.sup_rating": data.sup_rating
+        "otherSkills.$.emp_rating": data.emp_rating
       }
     },
     { multi: true, upsert: true }
