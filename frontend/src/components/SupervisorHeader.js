@@ -57,15 +57,18 @@ const loadingImage = {
 
 
 
-function Header(props) {
+function SupervisorHeader(props) {
 
   // const style = useStyles();
   const [isLoading, setIsLoading] = useState(false);
 
   const [rightOpen, setRightOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
-  const [employees, setEmployees] = useState();
+  // const [employees, setEmployees] = useState();
 
+  const employees = props.employeeArray
+
+  console.log('SUB EMPLOYEES: ', employees)
   // const employeeObject = props.employee;
 
   function endSession() {
@@ -84,7 +87,7 @@ function Header(props) {
   //     })
   // }, [])
 
-  // // SUPERVISOR 
+  // SUPERVISOR 
   // if (isLoading) {
   //   return (
   //     <div style={loadingStyle}>
@@ -102,8 +105,8 @@ function Header(props) {
 
     return (
       <div>
-      {/* // NORMAL EMPLOYEE */}
-  
+        {/* // NORMAL EMPLOYEE */}
+
         <CssBaseline />
         <AppBar position='sticky' color='primary' maxWidth=''>
 
@@ -115,7 +118,7 @@ function Header(props) {
 
 
             <Hidden smDown style={listStyle}>
-              
+
               <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/update' onClick={() => setLeftOpen(true)}>
                 EDIT PROFILE
               </Link>
@@ -151,7 +154,7 @@ function Header(props) {
             <Divider />
 
             <List>
-             
+
               <ListItem>
                 <Link style={linkStyle} color='primary' variant='button' underline='none' href='/update'>
                   EDIT PROFILE
@@ -164,7 +167,7 @@ function Header(props) {
               </ListItem>
               <ListItem>
                 <Link style={linkStyle} color='primary' variant='button' underline='none' href='/'
-                onClick={endSession}>
+                  onClick={endSession}>
                   LOG OUT
                 </Link>
               </ListItem>
@@ -191,7 +194,7 @@ function Header(props) {
 
             <Divider />
 
-            
+
             <Divider />
 
             <div style={spaceStyle}></div>
@@ -201,7 +204,33 @@ function Header(props) {
 
             <Divider />
 
+            {/* Subordinates */}
+            <Typography variant='h6'>
+              Subordinates
+            </Typography>
 
+            <Box sx={{
+              width: '90%', height: '35%', margin: '10px 5px',
+              padding: '2px 2px', border: '1px solid grey',
+              borderRadius: 4, overflow: 'auto'
+            }}>
+
+              {employees.map(emp => (
+                <Card sx={{ maxWidth: '345' }}>
+                  <CardActionArea>
+                    <CardContent>
+                      <Typography gutterBottom variant="h6" component="div">
+                        {emp.staffnumber}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {emp.jobTitle}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              ))}
+
+            </Box>
 
             <Divider />
 
@@ -230,9 +259,10 @@ function Header(props) {
         </div>
 
 
-    </div>
-      
+      </div>
+
     );
   // }
 }
-export default Header;
+export default SupervisorHeader;
+

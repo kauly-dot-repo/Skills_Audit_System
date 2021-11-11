@@ -2,7 +2,7 @@ import { Container, Divider, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Skills from '../components/Skills';
 import axios from 'axios';
-import SupervisorHeader from '../components/SupervisorDrawer';
+import SupervisorHeader from '../components/SupervisorHeader';
 
 // const containerStyle = {
 //   paddingTop: `calc(100% - ${})`
@@ -19,8 +19,8 @@ const loadingImage = {
 function SupervisorProfile(props) {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [employeeData, setEmployeeData] = useState(true);
-  const [employee, setEmployee] = useState(true);
+  const [employeeData, setEmployeeData] = useState([]);
+  const [subordinates, setSubordinates] = useState([]);
 
   // Use Effect to fetch data
   useEffect(() => { //this will be executed by react but only under certain circumstances
@@ -28,21 +28,33 @@ function SupervisorProfile(props) {
 
     axios.get(`http://localhost:8120/get-employee-skills/${localStorage.getItem('staffnumber')}`)
       .then(response => {
+        console.log("SKill Data", response.data);
         setEmployeeData(response.data);
         console.log('EMPLOYEE Data: ', employeeData);
         console.log('field skills: ', employeeData.fieldSkills);
-        setIsLoading(false);
+         setIsLoading(false);
       });
-
-      axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
+    }, []);
+    useEffect(() => { //this will be executed by react but only under certain circumstances
+      setIsLoading(true)
+  
+    axios.get(`http://localhost:8120/get-subordinates/${localStorage.getItem('staffnumber')}`)
       .then(response => {
-        setEmployee(response.data);
-        console.log('EMPLOYEE: ', employee);
-        // console.log('field skills: ', employee.fieldSkills);
-        setIsLoading(false);
-      });
-
-  }, []); //array of dependencies (when to execute)
+        setSubordinates(response.data)
+        console.log('SUB RESPONSE', response);
+        console.log('SUB RESPONSE Data', response.data);
+         setIsLoading(false)
+      })
+    }, []);
+    // axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
+    // .then(response => {
+    //   setEmployee(response.data);
+    //   console.log('EMPLOYEE: ', employee);
+    //   // console.log('field skills: ', employee.fieldSkills);
+    //   setIsLoading(false);
+    // });
+    // setIsLoading(false);
+   //array of dependencies (when to execute)
 
   if (isLoading) {
     return (
@@ -62,12 +74,12 @@ function SupervisorProfile(props) {
 
     return (
       <div>
-        <SupervisorHeader employee={employee}>
+        <SupervisorHeader employeeArray={subordinates}>
 
           <Container>
-          <Divider />
-            <Typography variant='h3' align='center' 
-            color='primary'>
+            <Divider />
+            <Typography variant='h3' align='center'
+              color='primary'>
               WELCOME SUPERVISOR !
             </Typography>
 

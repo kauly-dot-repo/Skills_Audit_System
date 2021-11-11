@@ -31,6 +31,7 @@ const style = {
 const background = { backgroundColor: '#fefefe'}
 
 function Skills(props) {
+  console.log('PROPS ARRAY: ', props);
 
   const [modalOpen, setModalOpen] = useState(false);
   // const [hasSkills, setHasSkills] = useState(false);
