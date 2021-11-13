@@ -11,10 +11,6 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import PublishOutlinedIcon from '@mui/icons-material/PublishOutlined';
 
 import axios from 'axios';
-// import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-// import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-// import SkipNextIcon from '@mui/icons-material/SkipNext';
-
 
 
 
@@ -25,10 +21,12 @@ function SkillCard(props) {
   const skillObject = props.skill;
 
   const [ratingModalOpen, setRatingModalOpen] = useState(false);
+  const [supModalOpen, setSupModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [skillModalOpen, setSkillModalOpen] = useState(false);
   // const [skillname, setSkillName] = useState('');
   const [skillLevel, setSkillLevel] = useState('');
+  const [supRating, setSupRating] = useState('');
 
   // Styling
   const textFieldStyle = { margin: "10px auto" }
@@ -105,6 +103,55 @@ function SkillCard(props) {
 
   };
 
+  function supervisorRating() {
+    if (props.skill_type == "Field Specific") {
+      console.log("I'm in Field Skills!!!")
+      axios.post('http://localhost:8120/update-field-rating', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillObject.skill_name,
+        sup_rating: supRating,
+      }).then((response) => {
+        console.log('RESPONSE', response);
+        console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
+      })
+    } else if (props.skill_type == "Job Specific") {
+      console.log("I'm in Job Skills!!!")
+      axios.post('http://localhost:8120/update-job-rating', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillObject.skill_name,
+        sup_rating: supRating,
+      }).then((response) => {
+        console.log('RESPONSE', response);
+        console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
+      })
+    } else if (props.skill_type == "Soft") {
+      console.log("I'm in Soft Skills!!!")
+      axios.post('http://localhost:8120/update-soft-rating', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillObject.skill_name,
+        sup_rating: supRating,
+      }).then((response) => {
+        console.log('RESPONSE', response);
+        console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
+      })
+    } else {
+      console.log("I'm in Other Skills!!!")
+      axios.post('http://localhost:8120/update-other-rating', {
+        staffnumber: localStorage.getItem('staffnumber'),
+        skill_name: skillObject.skill_name,
+        sup_rating: supRating,
+      }).then((response) => {
+        console.log('RESPONSE', response);
+        console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
+      })
+    }
+
+    console.log(skillObject.skill_name, 'Rated by Supervisor')
+
+    // window.location.reload();
+  };
+
+
   function deleteSkill(e) {
     e.preventDefault();
 
@@ -159,7 +206,12 @@ function SkillCard(props) {
     // window.location.reload();
   }
 
+  // const emp = props.employee;
+  const subNumber = props.subNumber;
+
   return (
+
+
     <div>
 
       <Card elevation={3} sx={{
@@ -361,6 +413,59 @@ function SkillCard(props) {
             >
               <Button variant='contained' color='secondary' endIcon={<PublishOutlinedIcon />} onClick={editSkill}>
                 Update
+              </Button>
+            </Box>
+
+          </form>
+
+        </Box>
+      </Modal>
+
+      {/* SUPERVISOR RATING */}
+      <Modal
+        open={supModalOpen}
+        onClose={() => setSupModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <IconButton sx={{ paddingLeft: 51, paddingTop: 0 }}>
+            <CloseOutlinedIcon onClick={() => setSupModalOpen(false)} />
+          </IconButton>
+          <Typography id="modal-modal-title" variant="h5" component="h2"
+            color='primary' style={textFieldStyle}
+          >
+            Rate {props.skill_type} Skill
+          </Typography>
+
+          {/* Update Skill */}
+          <Typography id="modal-modal-title" variant="subtitle1" color='grey' component="h2"
+            style={textFieldStyle}
+          >
+            Rate {subNumber} <span style={emphasisStyle}>{skillObject.skill_name}</span> Compentncy
+          </Typography>
+
+          <form>
+            {/* <FormLabel color='primary'>Update your Compentncy Rating Below</FormLabel> */}
+            <Slider
+              size="small"
+              defaultValue={skillObject.emp_rating}
+              aria-label="Small"
+              valueLabelDisplay="auto"
+              color='primary'
+              onChange={(e) => { setSupRating(e.target.value) }}
+
+            />
+
+            <Box sx={{
+              display: 'flex', alignItems: 'self-end',
+              pl: 1, pb: 1, marginTop: '5px', margin: '5px 5px'
+            }}
+            >
+              <Button variant='contained' color='secondary' endIcon={<PublishOutlinedIcon />}
+                onClick={supervisorRating}
+              >
+                Submit Rating
               </Button>
             </Box>
 

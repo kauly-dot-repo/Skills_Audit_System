@@ -37,11 +37,14 @@ function Skills(props) {
   // const [hasSkills, setHasSkills] = useState(false);
 
   const isSkillEmpty = props;
+  
 
   const [skillname, setSkillName] = useState('');
   const [skillLevel, setSkillLevel] = useState('');
   // const [skill, setSkill] = useState('');
+
   const skillArray = props.skills;
+  const subNumber = props.subNumber;
 
   console.log('SKILLS ARRAY: ', skillArray);
 
@@ -127,7 +130,7 @@ function Skills(props) {
           {/* map of skills */}
           {skillArray.map(skillItem => (
             <Grid item xs={12} sm={6} md={6} lg={12}>
-            <SkillCard skill={skillItem} skill_type={props.skillType} />
+            <SkillCard skill={skillItem} skill_type={props.skillType} subNumber={subNumber} />
             </Grid>
           ))}
         </Grid>

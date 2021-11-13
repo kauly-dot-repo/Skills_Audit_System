@@ -2,7 +2,7 @@ import { withTheme } from '@emotion/react';
 
 import {
   AppBar, Avatar, Container, Drawer, Link, Toolbar, Divider,
-  Hidden, IconButton, SwipeableDrawer, List, ListItem, Button, Typography, CssBaseline, Paper, CardHeader, Card, CardActionArea, CardContent
+  Hidden, IconButton, SwipeableDrawer, List, ListItem, Button, Typography, CssBaseline, Paper, CardHeader, Card, CardActionArea, CardContent, Modal
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
@@ -12,6 +12,8 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Box } from '@mui/system';
 import axios from 'axios';
+import ViewUser from './ViewUser';
+import Subordinates from './Subordinates';
 
 
 
@@ -64,6 +66,7 @@ function SupervisorHeader(props) {
 
   const [rightOpen, setRightOpen] = useState(false);
   const [leftOpen, setLeftOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false);
   // const [employees, setEmployees] = useState();
 
   const employees = props.employeeArray
@@ -75,7 +78,14 @@ function SupervisorHeader(props) {
     localStorage.clear();
   }
 
+  function deleteSkill() {
 
+  }
+
+  const [modalOpen, setModalOpen] = useState(false);
+  function viewUser() {
+
+  }
 
   // useEffect(() => {
   //   setIsLoading(true)
@@ -103,166 +113,161 @@ function SupervisorHeader(props) {
   //   );
   // } else {
 
-    return (
-      <div>
-        {/* // NORMAL EMPLOYEE */}
+  return (
+    <div>
+      {/* SUPERVISOR HEADER */}
 
-        <CssBaseline />
-        <AppBar position='sticky' color='primary' maxWidth=''>
+      <CssBaseline />
+      <AppBar position='sticky' color='primary' maxWidth=''>
 
-          <Toolbar disableGutters>
-            <div style={logo}>
-              <img src='https://www.nust.na/sites/default/files/nust_logoANDname-DARKBACKGROUND.png' alt="NUST LOGO" style={logo} />
-              <Typography variant='body1' color='white' style={titleStyle}>Skills Audit System</Typography>
-            </div>
+        <Toolbar disableGutters>
+          <div style={logo}>
+            <img src='https://www.nust.na/sites/default/files/nust_logoANDname-DARKBACKGROUND.png' alt="NUST LOGO" style={logo} />
+            <Typography variant='body1' color='white' style={titleStyle}>Skills Audit System</Typography>
+          </div>
 
 
-            <Hidden smDown style={listStyle}>
+          <Hidden smDown style={listStyle}>
 
-              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/update' onClick={() => setLeftOpen(true)}>
+            <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/update' onClick={() => setLeftOpen(true)}>
+              EDIT PROFILE
+            </Link>
+            <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/profile' onClick={() => setLeftOpen(true)}>
+              OPTIONS
+            </Link>
+            <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/' onClick={endSession}>
+              LOG OUT
+            </Link>
+
+
+            <Avatar style={avatarStyle} onClick={() => setLeftOpen(true)}>2</Avatar>
+
+          </Hidden>
+
+          <Hidden smUp>
+            <IconButton>
+              <MenuIcon color='secondary' onClick={() => setRightOpen(true)} />
+            </IconButton>
+          </Hidden>
+        </Toolbar>
+
+        <SwipeableDrawer open={rightOpen}
+          onOpen={() => setRightOpen(true)}
+          onClose={() => setRightOpen(false)}
+          anchor='right'>
+          <div>
+            <IconButton>
+              <ChevronRightIcon onClick={() => setRightOpen(false)} />
+            </IconButton>
+          </div>
+
+          <Divider />
+
+          <List>
+
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/update'>
                 EDIT PROFILE
               </Link>
-              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/profile' onClick={() => setLeftOpen(true)}>
+            </ListItem>
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='#'>
                 OPTIONS
               </Link>
-              <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/' onClick={endSession}>
+            </ListItem>
+            <ListItem>
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/'
+                onClick={endSession}>
                 LOG OUT
               </Link>
+            </ListItem>
+          </List>
 
 
-              <Avatar style={avatarStyle} onClick={() => setLeftOpen(true)}>2</Avatar>
+        </SwipeableDrawer>
 
-            </Hidden>
+        <SwipeableDrawer open={leftOpen}
+          onOpen={() => setLeftOpen(true)}
+          onClose={() => setLeftOpen(false)}
+          anchor='left'
+          style={{ width: "2500px" }}
+        >
+          <div style={dividerStyle}>
+            <IconButton>
+              <ChevronLeftIcon onClick={() => setLeftOpen(false)} />
+            </IconButton>
+          </div>
 
-            <Hidden smUp>
-              <IconButton>
-                <MenuIcon color='secondary' onClick={() => setRightOpen(true)} />
-              </IconButton>
-            </Hidden>
-          </Toolbar>
-
-          <SwipeableDrawer open={rightOpen}
-            onOpen={() => setRightOpen(true)}
-            onClose={() => setRightOpen(false)}
-            anchor='right'>
-            <div>
-              <IconButton>
-                <ChevronRightIcon onClick={() => setRightOpen(false)} />
-              </IconButton>
-            </div>
-
-            <Divider />
-
-            <List>
-
-              <ListItem>
-                <Link style={linkStyle} color='primary' variant='button' underline='none' href='/update'>
-                  EDIT PROFILE
-                </Link>
-              </ListItem>
-              <ListItem>
-                <Link style={linkStyle} color='primary' variant='button' underline='none' href='#'>
-                  OPTIONS
-                </Link>
-              </ListItem>
-              <ListItem>
-                <Link style={linkStyle} color='primary' variant='button' underline='none' href='/'
-                  onClick={endSession}>
-                  LOG OUT
-                </Link>
-              </ListItem>
-            </List>
+          <Divider />
 
 
-          </SwipeableDrawer>
-
-          <SwipeableDrawer open={leftOpen}
-            onOpen={() => setLeftOpen(true)}
-            onClose={() => setLeftOpen(false)}
-            anchor='left'
-            style={{ width: "2500px" }}
-          >
-            <div style={dividerStyle}>
-              <IconButton>
-                <ChevronLeftIcon onClick={() => setLeftOpen(false)} />
-              </IconButton>
-            </div>
-
-            <Divider />
-
-            <Avatar style={avatarStyle2} sx={{ width: 80, height: 80 }}>K</Avatar>
-
-            <Divider />
+          <Avatar style={avatarStyle2} sx={{ width: 80, height: 80 }}>K</Avatar>
 
 
-            <Divider />
+          <Divider />
 
-            <div style={spaceStyle}></div>
-            {/* if they are a supervisor they will get this view */}
+
+          <Divider />
+
+          <div style={spaceStyle}></div>
+          {/* if they are a supervisor they will get this view */}
+
+          <Divider />
+
+          {/* Subordinates */}
+          <Typography variant='h6'>
+            Subordinates
+          </Typography>
+
+          <Box sx={{
+            width: '90%', height: '35%', margin: '10px 5px',
+            padding: '2px 2px', border: '1px solid grey',
+            borderRadius: 4, overflow: 'auto'
+          }}>
+
+            {employees.map(emp => (
+              <Subordinates employees={emp} />
+            ))}
+
+      </Box>
 
 
 
-            <Divider />
+      <Divider />
 
-            {/* Subordinates */}
-            <Typography variant='h6'>
-              Subordinates
-            </Typography>
+      <Button
+        variant='contained'
+        color='primary'
+        endIcon={<LogoutIcon />}
+        sx={{
+          borderRadius: 0,
+        }}
+        onClick={endSession}
+      >
+        LOG OUT
+      </Button>
 
-            <Box sx={{
-              width: '90%', height: '35%', margin: '10px 5px',
-              padding: '2px 2px', border: '1px solid grey',
-              borderRadius: 4, overflow: 'auto'
-            }}>
-
-              {employees.map(emp => (
-                <Card sx={{ maxWidth: '345' }}>
-                  <CardActionArea>
-                    <CardContent>
-                      <Typography gutterBottom variant="h6" component="div">
-                        {emp.staffnumber}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {emp.jobTitle}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              ))}
-
-            </Box>
-
-            <Divider />
-
-            <Button
-              variant='contained'
-              color='primary'
-              endIcon={<LogoutIcon />}
-              sx={{
-                borderRadius: 0,
-              }}
-              onClick={endSession}
-            >
-              LOG OUT
-            </Button>
-
-            <Divider />
+      <Divider />
 
 
-          </SwipeableDrawer>
+    </SwipeableDrawer>
 
-        </AppBar>
+      </AppBar >
 
-        <div>
-          {/* <div className={classes.toolbar}></div> */}
-          {props.children}
-        </div>
+    <div>
+      {/* <div className={classes.toolbar}></div> */}
+      {props.children}
+    </div>
 
 
-      </div>
 
-    );
-  // }
-}
+  {/* END OF Outer div */ }
+    </div >
+  );
+
+  // } //END OF useEffect else statement
+
+
+} //END OF SupervisorHeader
 export default SupervisorHeader;
 

@@ -1,8 +1,9 @@
-import { Container, Divider, Grid, Typography } from '@mui/material';
+import { Container, Divider, Grid, Modal, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Skills from '../components/Skills';
 import axios from 'axios';
 import SupervisorHeader from '../components/SupervisorHeader';
+import ViewUser from '../components/ViewUser';
 
 // const containerStyle = {
 //   paddingTop: `calc(100% - ${})`
@@ -32,29 +33,29 @@ function SupervisorProfile(props) {
         setEmployeeData(response.data);
         console.log('EMPLOYEE Data: ', employeeData);
         console.log('field skills: ', employeeData.fieldSkills);
-         setIsLoading(false);
+        setIsLoading(false);
       });
-    }, []);
-    useEffect(() => { //this will be executed by react but only under certain circumstances
-      setIsLoading(true)
-  
+  }, []);
+  useEffect(() => { //this will be executed by react but only under certain circumstances
+    setIsLoading(true)
+
     axios.get(`http://localhost:8120/get-subordinates/${localStorage.getItem('staffnumber')}`)
       .then(response => {
         setSubordinates(response.data)
         console.log('SUB RESPONSE', response);
         console.log('SUB RESPONSE Data', response.data);
-         setIsLoading(false)
+        setIsLoading(false)
       })
-    }, []);
-    // axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
-    // .then(response => {
-    //   setEmployee(response.data);
-    //   console.log('EMPLOYEE: ', employee);
-    //   // console.log('field skills: ', employee.fieldSkills);
-    //   setIsLoading(false);
-    // });
-    // setIsLoading(false);
-   //array of dependencies (when to execute)
+  }, []);
+  // axios.get(`http://localhost:8120/getEmployee/${localStorage.getItem('staffnumber')}`)
+  // .then(response => {
+  //   setEmployee(response.data);
+  //   console.log('EMPLOYEE: ', employee);
+  //   // console.log('field skills: ', employee.fieldSkills);
+  //   setIsLoading(false);
+  // });
+  // setIsLoading(false);
+  //array of dependencies (when to execute)
 
   if (isLoading) {
     return (
@@ -114,6 +115,8 @@ function SupervisorProfile(props) {
           </Container>
 
         </SupervisorHeader>
+
+        
       </div>
     );
 
