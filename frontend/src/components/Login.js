@@ -1,7 +1,8 @@
 import React, { Component, useState } from 'react';
 import {
-  Container, Grid, Paper, Avatar, Typography, TextField, Button, FormControl, FormLabel, RadioGroup, Radio,
-  FormControlLabel, Select, Checkbox, MenuItem, InputLabel
+  Container, Grid, Paper, Avatar, Typography, TextField, Button, FormControl, 
+  FormLabel, RadioGroup, Radio, FormControlLabel, Select, Checkbox, MenuItem, 
+  InputLabel
 } from '@mui/material'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Link } from 'react-router-dom';
@@ -13,7 +14,11 @@ import { useHistory } from 'react-router';
 
 function Login() {
 
-  const paperStyle = { padding: '30px 20px', width: 'fit-content', margin: "50px auto" }
+  const paperStyle = { 
+    padding: '30px 20px', 
+    width: 'fit-content', 
+    margin: "50px auto" 
+  }
   const textFieldStyle = { margin: "10px auto" }
   // const spacingStyle = { margin: "20px auto" }
   // const headerStyle = { margin: 0 }
@@ -37,11 +42,11 @@ function Login() {
         } 
         
         if (response.data.supervisor == false) {
-
           console.log('Login Response: ' + response.data.staffnumber);
           // alert(': User ' + email + ' Logged in successfully');
           console.log(response);
           localStorage.setItem('staffnumber', response.data.staffnumber);
+          localStorage.setItem('supervisorStatus', response.data.supervisor);
 
           history.push('/profile');
         } else {
@@ -49,6 +54,7 @@ function Login() {
           // alert(': User ' + email + ' Logged in successfully');
           console.log(response);
           localStorage.setItem('staffnumber', response.data.staffnumber);
+          localStorage.setItem('supervisorStatus', response.data.supervisor);
 
           history.push('/supervisor-profile');
         }

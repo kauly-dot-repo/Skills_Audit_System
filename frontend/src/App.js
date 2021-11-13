@@ -7,6 +7,7 @@ import Profile from './pages/Profile';
 import { StyledEngineProvider } from '@mui/material/styles';
 import UpdateProfile from './components/UpdateProfile';
 import SupervisorProfile from './pages/SupervisorProfile';
+import Reports from './pages/Reports';
 
 
 const theme = createTheme({
@@ -46,6 +47,7 @@ function App() {
       
         <Router>
           <Switch>
+            <Route exact path="/reports" component={Reports} />
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/supervisor-profile" 
             component={SupervisorProfile} />

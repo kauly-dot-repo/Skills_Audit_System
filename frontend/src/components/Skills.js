@@ -27,6 +27,7 @@ const style = {
   boxShadow: '1px 1px 18px 1px rgb(27, 44, 93)',
   p: 4,
 };
+            // console.log('Is Subordinate: ', props.isSubordinate)
 
 const background = { backgroundColor: '#fefefe'}
 
@@ -37,7 +38,6 @@ function Skills(props) {
   // const [hasSkills, setHasSkills] = useState(false);
 
   const isSkillEmpty = props;
-  
 
   const [skillname, setSkillName] = useState('');
   const [skillLevel, setSkillLevel] = useState('');
@@ -45,6 +45,7 @@ function Skills(props) {
 
   const skillArray = props.skills;
   const subNumber = props.subNumber;
+  const isSub = props.isSubordinate;
 
   console.log('SKILLS ARRAY: ', skillArray);
 
@@ -130,7 +131,12 @@ function Skills(props) {
           {/* map of skills */}
           {skillArray.map(skillItem => (
             <Grid item xs={12} sm={6} md={6} lg={12}>
-            <SkillCard skill={skillItem} skill_type={props.skillType} subNumber={subNumber} />
+            <SkillCard 
+            skill={skillItem} 
+            skill_type={props.skillType} 
+            subNumber={subNumber}
+            isSubordinate={isSub}
+             />
             </Grid>
           ))}
         </Grid>

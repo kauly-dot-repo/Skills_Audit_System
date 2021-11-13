@@ -66,6 +66,7 @@ function Register() {
       // alert("Invalid Input");
     }
   };
+
   const departments = [
     // 'Department of Computing and Informatics',
     { key: 1, value: 'Department of Human Resources' },

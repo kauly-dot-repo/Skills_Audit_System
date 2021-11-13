@@ -49,13 +49,6 @@ const contentStyle = { paddingTop: '1000px' }
 const titleStyle = { paddingLeft: 50, margin: '1px 1px' }
 const drawerStyle = { padding: '100px' }
 
-const loadingStyle = {
-  padding: 10
-}
-const loadingImage = {
-  maxWidth: '90%',
-  margin: ' 3px auto 3px 0px'
-}
 
 
 
@@ -132,8 +125,8 @@ function SupervisorHeader(props) {
             <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/update' onClick={() => setLeftOpen(true)}>
               EDIT PROFILE
             </Link>
-            <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/profile' onClick={() => setLeftOpen(true)}>
-              OPTIONS
+            <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/reports' onClick={() => setLeftOpen(true)}>
+              REPORTS
             </Link>
             <Link style={linkStyle} color='secondary' variant='button' underline='none' href='/' onClick={endSession}>
               LOG OUT
@@ -171,8 +164,8 @@ function SupervisorHeader(props) {
               </Link>
             </ListItem>
             <ListItem>
-              <Link style={linkStyle} color='primary' variant='button' underline='none' href='#'>
-                OPTIONS
+              <Link style={linkStyle} color='primary' variant='button' underline='none' href='/reports'>
+                REPORTS
               </Link>
             </ListItem>
             <ListItem>
@@ -207,6 +200,7 @@ function SupervisorHeader(props) {
           <Divider />
 
 
+
           <Divider />
 
           <div style={spaceStyle}></div>
@@ -229,39 +223,37 @@ function SupervisorHeader(props) {
               <Subordinates employees={emp} />
             ))}
 
-      </Box>
+          </Box>
+
+          <Divider />
+
+          <Button
+            variant='contained'
+            color='primary'
+            endIcon={<LogoutIcon />}
+            sx={{
+              borderRadius: 0,
+            }}
+            onClick={endSession}
+          >
+            LOG OUT
+          </Button>
+
+          <Divider />
+
+
+        </SwipeableDrawer>
+
+      </AppBar>
+
+      <div>
+        {/* <div className={classes.toolbar}></div> */}
+        {props.children}
+      </div>
 
 
 
-      <Divider />
-
-      <Button
-        variant='contained'
-        color='primary'
-        endIcon={<LogoutIcon />}
-        sx={{
-          borderRadius: 0,
-        }}
-        onClick={endSession}
-      >
-        LOG OUT
-      </Button>
-
-      <Divider />
-
-
-    </SwipeableDrawer>
-
-      </AppBar >
-
-    <div>
-      {/* <div className={classes.toolbar}></div> */}
-      {props.children}
-    </div>
-
-
-
-  {/* END OF Outer div */ }
+      {/* END OF Outer div */}
     </div >
   );
 

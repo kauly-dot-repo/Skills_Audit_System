@@ -14,12 +14,14 @@ const loadingImage = {
 }
 
 
+
+
 function ViewUser(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [employeeData, setEmployeeData] = useState(true);
 
   const emp = props.employee;
-
+  const isSubordinate = true;
   useEffect(() => { //this will be executed by react but only under certain circumstances
     setIsLoading(true)
 
@@ -67,6 +69,7 @@ function ViewUser(props) {
                   <Skills
                     skillType={props.skillType}
                     skills={employeeData.fieldSkills}
+                    isSubordinate={true}
                     subNumber={emp.staffnumber}
                   />
 
@@ -97,12 +100,13 @@ function ViewUser(props) {
                   <Skills
                     skillType={props.skillType}
                     skills={employeeData.jobSkills}
+                    isSubordinate={true}
                     subNumber={emp.staffnumber}
                   />
 
                 </Grid>
               </Grid>
-              
+
             </Container>
 
 
@@ -128,6 +132,7 @@ function ViewUser(props) {
                   <Skills
                     skillType={props.skillType}
                     skills={employeeData.jobSoftSkills}
+                    isSubordinate={true}
                     subNumber={emp.staffnumber}
                   />
 

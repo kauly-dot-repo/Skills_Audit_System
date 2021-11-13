@@ -96,7 +96,7 @@ function Subordinates(props) {
                 </FormControl>
               </Box>
 
-              <ViewUser employee={emp} skillType={skill_type} />
+              <ViewUser employee={emp} skillType={skill_type}  />
             </Typography>
           </Box>
         </Modal>

@@ -56,6 +56,7 @@ app.get("/login/:email/:password", (req, res) => {
 });
 
 
+
 //Get One Employee by Staff Number
 app.get("/getEmployee/:staffnumber", (req, res) => {
   const staffnumber = req.params.staffnumber;
@@ -79,21 +80,18 @@ app.post('/updateEmployee', async (req, res) => {
     { staffnumber: data.staffnumber },
     {
       $set: data
-    }, {multi: true, upsert: true}
+    }, { multi: true, upsert: true }
   )
 });
 
 //Retrieve/Find All Employees-------------------------------
 app.get('/getAllEmployees', (req, res) => {
-  const data = req.body;
+  const data = req.params.data;
 
   return Employee.find({},
     {
       _id: 0,
       password: 0,
-      jobSkills: 0,
-      fieldSkills: 0,
-      otherSkills: 0,
       __v: 0,
 
     })
@@ -142,7 +140,7 @@ app.get('/get-subordinates/:supervisorNo', (req, res) => {
   const supervisorNo = req.params.supervisorNo;
 
   return Employee.find(
-    { supervisorNo:supervisorNo },
+    { supervisorNo: supervisorNo },
     { email: 0, password: 0 }
   ).then(result => {
     console.log('SUBORDINATES: ', result)
@@ -299,7 +297,8 @@ app.post('/new-field-skill', (req, res) => {
       $push: {
         fieldSkills: {
           skill_name: data.skill_name,
-          emp_rating: data.emp_rating
+          emp_rating: data.emp_rating,
+          sup_rating: 0
         }
       }
     },
@@ -327,7 +326,8 @@ app.post('/new-job-skill', (req, res) => {
       $push: {
         jobSkills: {
           skill_name: data.skill_name,
-          emp_rating: data.emp_rating
+          emp_rating: data.emp_rating,
+          sup_rating: 0
         }
       }
     },
@@ -355,7 +355,8 @@ app.post('/new-soft-skill', (req, res) => {
       $push: {
         jobSoftSkills: {
           skill_name: data.skill_name,
-          emp_rating: data.emp_rating
+          emp_rating: data.emp_rating,
+          sup_rating: 0
         }
       }
     },
@@ -383,7 +384,8 @@ app.post('/new-other-skill', (req, res) => {
       $push: {
         otherSkills: {
           skill_name: data.skill_name,
-          emp_rating: data.emp_rating
+          emp_rating: data.emp_rating,
+          sup_rating: 0
         }
       }
     },
@@ -404,11 +406,11 @@ app.post('/new-other-skill', (req, res) => {
 //Add Supervisor Rating -------------------------------
 //Field-Related Skill
 app.post('supervisor-field-rating', (req, res) => {
-  const data = re.body;
+  const data = req.body;
 
   return Employee.updateOne(
     {
-      email: data.email,
+      staffnumber: data.staffnumber,
       "fieldSkills.skill_name": data.skill_name
     },
     {
@@ -418,17 +420,18 @@ app.post('supervisor-field-rating', (req, res) => {
     },
     { multi: true, upsert: true }
   ).then(result => {
+    console.log('FIELD RATING: ', result)
     return res.send(result);
   });
 });
 
 //Job-Related Skill
 app.post('/supervisor-job-rating', (req, res) => {
-  const data = re.body;
+  const data = req.body;
 
   return Employee.updateOne(
     {
-      email: data.email,
+      staffnumber: data.staffnumber,
       "jobSkills.skill_name": data.skill_name
     },
     {
@@ -438,9 +441,82 @@ app.post('/supervisor-job-rating', (req, res) => {
     },
     { multi: true, upsert: true }
   ).then(result => {
+    console.log('JOB RATING: ', result)
     return res.send(result);
   });
 });
+
+app.post('/supervisor-soft-rating', (req, res) => {
+  const data = req.body;
+  console.log('SOFT DATA: ', data)
+
+  return Employee.updateOne(
+    {
+      staffnumber: data.staffnumber,
+      "jobSoftSkills.skill_name": data.skill_name
+    },
+    {
+      $set: {
+        "jobSoftSkills.$.sup_rating": data.sup_rating
+      }
+    },
+    { multi: true, upsert: true }
+  ).then(result => {
+    console.log('SOFT RATING: ', result)
+    return res.send(result);
+  });
+});
+
+
+//Filter by Skill Name
+app.post('/filter-by-skillname', (req, res) => {
+  const data = req.body;
+  
+  if (data.department !== undefined  && data.skillName == ""){
+   
+      return Employee.find(
+        {
+        department:data.department,
+      }).then(result => {
+        console.log('filter-by-skillname:', result)
+        return res.send(result);
+      });
+  }else if (data.department == ""  && data.skillName !== undefined){
+    return Employee.find(
+   
+      {
+        $or: [
+          { "jobSkills.skill_name": data.skillName },
+          { "fieldSkills.skill_name": data.skillName },
+          { "jobSoftSkills.skill_name": data.skillName },
+          { "otherSkills.skill_name": data.skillName }
+        ]
+      }
+    ).then(result => {
+      console.log('filter-by-skillname:', result)
+      return res.send(result);
+    });
+  }else{
+    return Employee.find(
+   
+      {
+        $match:{ department:data.department},
+        $or: [
+          { "jobSkills.skill_name": data.skillName },
+          { "fieldSkills.skill_name": data.skillName },
+          { "jobSoftSkills.skill_name": data.skillName },
+          { "otherSkills.skill_name": data.skillName }
+        ]
+      }
+    ).then(result => {
+      console.log('filter-by-skillname:', result)
+      return res.send(result);
+    });
+  }
+
+
+
+})
 
 
 //UPDATE EMPLOYEE RATING -------------------------------

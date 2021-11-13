@@ -103,11 +103,15 @@ function SkillCard(props) {
 
   };
 
+
+  const subNumber = props.subNumber;
+  const isSub = props.isSubordinate;
+
   function supervisorRating() {
     if (props.skill_type == "Field Specific") {
-      console.log("I'm in Field Skills!!!")
-      axios.post('http://localhost:8120/update-field-rating', {
-        staffnumber: localStorage.getItem('staffnumber'),
+      console.log("Supervisor in Field Skills!!!")
+      axios.post('http://localhost:8120/supervisor-field-rating', {
+        staffnumber: subNumber,
         skill_name: skillObject.skill_name,
         sup_rating: supRating,
       }).then((response) => {
@@ -115,19 +119,9 @@ function SkillCard(props) {
         console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
       })
     } else if (props.skill_type == "Job Specific") {
-      console.log("I'm in Job Skills!!!")
-      axios.post('http://localhost:8120/update-job-rating', {
-        staffnumber: localStorage.getItem('staffnumber'),
-        skill_name: skillObject.skill_name,
-        sup_rating: supRating,
-      }).then((response) => {
-        console.log('RESPONSE', response);
-        console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
-      })
-    } else if (props.skill_type == "Soft") {
-      console.log("I'm in Soft Skills!!!")
-      axios.post('http://localhost:8120/update-soft-rating', {
-        staffnumber: localStorage.getItem('staffnumber'),
+      console.log("Supervisor in Job Skills!!!")
+      axios.post('http://localhost:8120/supervisor-job-rating', {
+        staffnumber: subNumber,
         skill_name: skillObject.skill_name,
         sup_rating: supRating,
       }).then((response) => {
@@ -135,9 +129,9 @@ function SkillCard(props) {
         console.log('Skillname ' + skillObject.skill_name + ' Supervisor Rating: ' + supRating)
       })
     } else {
-      console.log("I'm in Other Skills!!!")
-      axios.post('http://localhost:8120/update-other-rating', {
-        staffnumber: localStorage.getItem('staffnumber'),
+      console.log("Supervisor in Soft Skills!!!")
+      axios.post('http://localhost:8120/supervisor-soft-rating', {
+        staffnumber: subNumber,
         skill_name: skillObject.skill_name,
         sup_rating: supRating,
       }).then((response) => {
@@ -207,8 +201,7 @@ function SkillCard(props) {
   }
 
   // const emp = props.employee;
-  const subNumber = props.subNumber;
-
+  
   return (
 
 
@@ -252,24 +245,36 @@ function SkillCard(props) {
 
         {/* Card Content */}
         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-          <CardContent sx={{ display: 'flex', flexDirection: 'row' }}
-            onClick={() => setRatingModalOpen(true)}
-          >
-            <Typography variant="caption" color="primary" component="div"
-              sx={{ marginRight: 1 }}>
-              Employee Rating:
-              <Typography variant='body1' color='error'>
-                {skillObject.emp_rating}
-              </Typography>
-            </Typography>
 
-            <Typography variant="caption" color="primary" component="div"
-              sx={{ marginLeft: 1 }}>
-              Supervisor Rating:
-              <Typography variant='body1' color='error'>
-                {skillObject.sup_rating}
+          <CardContent sx={{ display: 'flex', flexDirection: 'row' }}
+            onClick={() => {
+              console.log('Is Subordinate: ', isSub)
+              isSub == true ? setSupModalOpen(true) : setRatingModalOpen(true)
+            }}
+          >
+            <div>
+              <Typography variant="caption" color="primary" component="div"
+                sx={{ marginRight: 1 }}
+              // onClick={() => setRatingModalOpen(true)}
+              >
+                Employee Rating:
+                <Typography variant='body1' color='error'>
+                  {skillObject.emp_rating}
+                </Typography>
               </Typography>
-            </Typography>
+            </div>
+
+            <div>
+              <Typography variant="caption" color="primary" component="div"
+                sx={{ marginLeft: 1 }}
+
+              >
+                Supervisor Rating:
+                <Typography variant='body1' color='error'>
+                  {skillObject.sup_rating}
+                </Typography>
+              </Typography>
+            </div>
           </CardContent>
 
 
@@ -435,7 +440,7 @@ function SkillCard(props) {
           <Typography id="modal-modal-title" variant="h5" component="h2"
             color='primary' style={textFieldStyle}
           >
-            Rate {props.skill_type} Skill
+            Supervisor, Please Rate {props.skill_type} Skill
           </Typography>
 
           {/* Update Skill */}
