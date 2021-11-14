@@ -1,15 +1,30 @@
+const history = require('connect-history-api-fallback');
 const express = require('express');
 const app = express();
+const path = require('path');
 app.use(express.json());
+app.use(history());
+
+
+
 
 const Employee = require('./models/employee.model');
 
 const mongoose = require("mongoose");
 
 const cors = require("cors");
-app.use(cors({ origin: "http://localhost:3000" }));
+app.use(cors({ origin: "http://localhost:8120" }));
+// app.use(cors({ origin: "http://localhost:3000" }));
 
-const URL = 'mongodb://localhost:27017/SkillsAudit';
+app.use(express.static(path.join(__dirname, 'build')));
+
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+
+// const URL = 'mongodb+srv://kauly:rockstar23@cluster0.zlwvy.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const URL = 'mongodb://localhost:27017/SkillsAudit'
 
 const data_connection = mongoose.connect(URL, {});
 
@@ -102,6 +117,23 @@ app.get('/getAllEmployees', (req, res) => {
 
 });
 
+//Get Employees by department
+app.get('/get-by-department/:department', (req, res) => {
+  const department = req.params.department;
+
+  return Employee.find(
+    { department: department },
+    {
+      email: 0,
+      password: 0,
+      _id: 0,
+      __v: 0,
+    }
+  ).then(result => {
+    console.log('Emps By Department: ', result)
+    res.send(result)
+  })
+});
 
 //Delete ONE Employee--------------------------------------
 app.delete("/deleteEmployee", (req, res) => {
@@ -180,8 +212,8 @@ app.post('/delete-field-skill', (req, res) => {
       $pull: {
         fieldSkills: {
           skill_name: data.skill_name,
-          emp_rating: data.emp_rating,
-          sup_rating: data.sup_rating
+          emp_rating: data.emp_rating
+          // sup_rating: data.sup_rating
         }
       }
     },
@@ -471,19 +503,19 @@ app.post('/supervisor-soft-rating', (req, res) => {
 //Filter by Skill Name
 app.post('/filter-by-skillname', (req, res) => {
   const data = req.body;
-  
-  if (data.department !== undefined  && data.skillName == ""){
-   
-      return Employee.find(
-        {
-        department:data.department,
+
+  if (data.department !== undefined && data.skillName == "") {
+
+    return Employee.find(
+      {
+        department: data.department,
       }).then(result => {
         console.log('filter-by-skillname:', result)
         return res.send(result);
       });
-  }else if (data.department == ""  && data.skillName !== undefined){
+  } else if (data.department == "" && data.skillName !== undefined) {
     return Employee.find(
-   
+
       {
         $or: [
           { "jobSkills.skill_name": data.skillName },
@@ -496,11 +528,11 @@ app.post('/filter-by-skillname', (req, res) => {
       console.log('filter-by-skillname:', result)
       return res.send(result);
     });
-  }else{
+  } else {
     return Employee.find(
-   
+
       {
-        $match:{ department:data.department},
+        $match: { department: data.department },
         $or: [
           { "jobSkills.skill_name": data.skillName },
           { "fieldSkills.skill_name": data.skillName },
